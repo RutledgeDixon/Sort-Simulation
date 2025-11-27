@@ -22,6 +22,7 @@ var rectProperties = {
     x: 0.1,
     z: 0.2,
 } // the x and z properties of all rectangles
+var spacing = rectProperties.x + 0.05;
 
 //camera stuff
 // camera frustum (updated to cover the scene distances)
@@ -103,7 +104,7 @@ function runProgram() {
             z: rectProperties.z,
         }
         drawRect(obj, startingX);
-        startingX += 0.15; // must be bigger than size in drawRect to avoid overlap
+        startingX += spacing; 
     }
 
     requestAnimationFrame(runProgram);
