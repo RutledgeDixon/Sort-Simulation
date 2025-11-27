@@ -16,13 +16,14 @@ var colors = [];
 var normals = [];
 var ambientColor = [0.2, 0.2, 0.2];
 
-var objYs = [0.1, 0.2, 0.3, 0.32]; // array of just the y values for sorting
+var isSorting = false;
+var count = 5;
+var gap = 0.05;
+var objYs = []; // array of just the y values for sorting
 var currentAlgorithm = 'bubble';
-var rectProperties = {
-    x: 0.1,
-    z: 0.2,
-} // the x and z properties of all rectangles
-var spacing = rectProperties.x + 0.05;
+var spacing, totalWidth, startingX;
+var rectProperties = { x: 0.0, z: 0.0, maxHeight: 0.5 } // the x and z properties of all rectangles
+changeCount(count); // initialize objYs and spacing
 
 //camera stuff
 // camera frustum (updated to cover the scene distances)
@@ -150,15 +151,15 @@ function runProgram() {
     gl.uniformMatrix4fv( projectionMatrixLoc, false, flatten(projectionMatrix) );
 
     //loop through obj array and draw rectangles
-    var startingX = -0.5;
+    var offset = startingX
     for (var i = 0; i < objYs.length; i++) {
         var obj = {
             x: rectProperties.x,
             y: objYs[i],
             z: rectProperties.z,
         }
-        drawRect(obj, startingX);
-        startingX += spacing; 
+        drawRect(obj, offset);
+        offset += spacing; 
     }
 
     requestAnimationFrame(runProgram);
@@ -224,6 +225,33 @@ function drawRect(obj, startingX) {
 
     //draw the rectangle
     gl.drawElements(gl.TRIANGLES, rectIndices.length, gl.UNSIGNED_SHORT, 0);
+}
+
+function toggleSorting() {
+    isSorting = !isSorting;
+    var startButton = document.getElementById("start-button");
+    startButton.textContent = isSorting ? "Pause" : "Start";
+    console.log("Sorting " + (isSorting ? "started" : "paused"));
+}
+
+function randomizeArray() {
+    objYs.sort(() => Math.random() - 0.5);
+    console.log("Object array randomized");
+}
+
+function changeCount(newCount) {
+    count = newCount;
+    objYs = [];
+    for (var i = 1; i <= count; i++) {
+        objYs.push(rectProperties.maxHeight * i / count);
+    }
+    //update spacing and rect x and z to fit the page
+    rectProperties.x = (1.5 - (count - 1) * gap) / count;
+    rectProperties.z = rectProperties.x;
+    spacing = rectProperties.x + gap;
+    //update starting x offset to center the rectangles
+    totalWidth = (count * rectProperties.x) + ((count - 1) * gap);
+    startingX = -totalWidth / 2;
 }
 
 // Small runtime health check for quick verification from the browser

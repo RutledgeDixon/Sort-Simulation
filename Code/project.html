@@ -74,13 +74,16 @@ void main() {
             <option value="fast">Fast</option>
         </select>
         <Label id="count-label" for="count-select">Count</Label>
-        <input type="number" id="count-select" value="4" min="2" max="20" onchange="changeCount(this.value)">
+        <input type="number" id="count-select" value="5" min="2" max="20" onchange="changeCount(this.value)">
     </div>
     <div id="canvas-container">
         <canvas id="webgl" width="1024" height="1024">
             Oops ... your browser doesn't support the HTML5 canvas element
         </canvas>
-        <button id="start-button" onclick="startSorting()">Start Sorting</button>
+        <div id="bottom-controls">
+            <button id="start-button" onclick="toggleSorting()">Start</button>
+            <button id="randomize-button" onclick="randomizeArray()">Randomize</button>
+        </div>
     </div>
 </div>
 </body>
