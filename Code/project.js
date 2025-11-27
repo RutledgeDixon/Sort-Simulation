@@ -1,3 +1,7 @@
+// Computer Graphics Final Project
+// Sorting Algorithm Visualization in 3D using WebGL
+// Fall 25
+// Brandon Bryant and Rutledge Dixon
 
 var gl;
 var program;
@@ -9,21 +13,16 @@ var indexBuffer;
 var colorBuffer;
 var normalBuffer;
 
-var points = [];
-var vertices = [];
-var indices = [];
-var colors = [];
-var normals = [];
 var ambientColor = [0.2, 0.2, 0.2];
+
+var currentAlgorithm = 'bubble';
 
 var isSorting = false;
 var count = 5;
 var gap = 0.05;
 var objYs = []; // array of just the y values for sorting
-var currentAlgorithm = 'bubble';
-var spacing, totalWidth, startingX;
+var spacing, totalWidth, startingX; //helper values for positioning
 var rectProperties = { x: 0.0, z: 0.0, maxHeight: 0.5 } // the x and z properties of all rectangles
-changeCount(count); // initialize objYs and spacing
 
 //camera stuff
 // camera frustum (updated to cover the scene distances)
@@ -49,20 +48,6 @@ function main() {
     if (!gl) { alert("WebGL isn't available"); }
 
     //  Configure WebGL
-    // Make the canvas match its displayed size (handles responsive CSS + device pixel ratio)
-    function resizeCanvasToDisplaySize(can) {
-        var dpr = window.devicePixelRatio || 1;
-        var displayWidth = Math.max(1, Math.floor(can.clientWidth * dpr));
-        var displayHeight = Math.max(1, Math.floor(can.clientHeight * dpr));
-        if (can.width !== displayWidth || can.height !== displayHeight) {
-            can.width = displayWidth;
-            can.height = displayHeight;
-            return true;
-        }
-        return false;
-    }
-
-    // ensure proper DPI sizing
     resizeCanvasToDisplaySize(canvas);
     gl.viewport(0, 0, canvas.width, canvas.height);
     // keep aspect ratio in sync with canvas display size
@@ -104,6 +89,9 @@ function main() {
     modelViewMatrixLoc = gl.getUniformLocation( program, "modelViewMatrix" );
     projectionMatrixLoc = gl.getUniformLocation( program, "projectionMatrix" );
 
+    //initialize positioining variables
+    changeCount(count);
+    //start the render loop
     runProgram();
     
 }
@@ -254,16 +242,15 @@ function changeCount(newCount) {
     startingX = -totalWidth / 2;
 }
 
-// Small runtime health check for quick verification from the browser
-window.__projectHealthCheck = function() {
-    return {
-        glAvailable: !!gl,
-        programLoaded: !!program,
-        attribs: {
-            position: (vPosition !== undefined && vPosition !== -1),
-            color: (vColor !== undefined && vColor !== -1),
-            normal: (vNormal !== undefined && vNormal !== -1)
-        },
-        objCount: (typeof objYs !== 'undefined' ? objYs.length : 0)
-    };
-};
+// Make the canvas match its displayed size (handles responsive CSS + device pixel ratio)
+function resizeCanvasToDisplaySize(can) {
+    var dpr = window.devicePixelRatio || 1;
+    var displayWidth = Math.max(1, Math.floor(can.clientWidth * dpr));
+    var displayHeight = Math.max(1, Math.floor(can.clientHeight * dpr));
+    if (can.width !== displayWidth || can.height !== displayHeight) {
+        can.width = displayWidth;
+        can.height = displayHeight;
+        return true;
+    }
+    return false;
+}
