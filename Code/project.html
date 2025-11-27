@@ -3,6 +3,7 @@
 <head id="header">
     <meta charset="utf-8" />
     <title>Algrorithm Visualisation</title>
+    <link rel="stylesheet" href="project.css">
 </head>
 
 <body onload="main()">
@@ -60,9 +61,27 @@ void main() {
 <script type="text/javascript" src="../Common/MV.js"></script>
 <script type="text/javascript" src="project.js"></script>
 
-
-    <canvas id="webgl" width="1024" height="1024">
-Oops ... your browser doesn't support the HTML5 canvas element
-</canvas>
+<div id="main-container">
+    <div id="options">
+        <Label id="select-label" for="algorithm-select">Select Sorting Algorithm</Label>
+        <select id="algorithm-select" onchange="changeAlgorithm(this.value)">
+            <option value="bubble">Bubble Sort</option>
+        </select>
+        <Label id="speed-label" for="speed-select">Select Speed</Label>
+        <select id="speed-select" onchange="changeSpeed(this.value)">
+            <option value="slow">Slow</option>
+            <option value="medium" selected>Medium</option>
+            <option value="fast">Fast</option>
+        </select>
+        <Label id="count-label" for="count-select">Count</Label>
+        <input type="number" id="count-select" value="4" min="2" max="20" onchange="changeCount(this.value)">
+    </div>
+    <div id="canvas-container">
+        <canvas id="webgl" width="1024" height="1024">
+            Oops ... your browser doesn't support the HTML5 canvas element
+        </canvas>
+        <button id="start-button" onclick="startSorting()">Start Sorting</button>
+    </div>
+</div>
 </body>
 </html>

@@ -48,9 +48,31 @@ function main() {
     if (!gl) { alert("WebGL isn't available"); }
 
     //  Configure WebGL
+    // Make the canvas match its displayed size (handles responsive CSS + device pixel ratio)
+    function resizeCanvasToDisplaySize(can) {
+        var dpr = window.devicePixelRatio || 1;
+        var displayWidth = Math.max(1, Math.floor(can.clientWidth * dpr));
+        var displayHeight = Math.max(1, Math.floor(can.clientHeight * dpr));
+        if (can.width !== displayWidth || can.height !== displayHeight) {
+            can.width = displayWidth;
+            can.height = displayHeight;
+            return true;
+        }
+        return false;
+    }
+
+    // ensure proper DPI sizing
+    resizeCanvasToDisplaySize(canvas);
     gl.viewport(0, 0, canvas.width, canvas.height);
-    // keep aspect ratio in sync with canvas
-    aspect = canvas.width / canvas.height;
+    // keep aspect ratio in sync with canvas display size
+    aspect = (canvas.clientWidth / canvas.clientHeight) || 1.0;
+
+    // update on window resize
+    window.addEventListener('resize', function() {
+        resizeCanvasToDisplaySize(canvas);
+        gl.viewport(0, 0, canvas.width, canvas.height);
+        aspect = (canvas.clientWidth / canvas.clientHeight) || 1.0;
+    });
     gl.clearColor(0.3, 0.3, 0.3, 1.0);
 
     // Enable depth testing
@@ -83,6 +105,38 @@ function main() {
 
     runProgram();
     
+}
+
+//does the next swap in the current algorithm
+function doOneSwap() {
+    if (isSorted(objYs)) return;
+
+    if (currentAlgorithm === 'bubble') {
+        bubbleSortStep();
+    }
+}
+
+function isSorted(list) {
+    var sorted = true;
+    for (var i = 1; i < list.length; i++) {
+        if (list[i-1] > list[i]) {
+            sorted = false;
+            break;
+        }
+    }
+    return sorted;
+}
+
+function bubbleSortStep() {
+    for (var i = 1; i < objYs.length - 1; i++) {
+        if (objYs[i-1] > objYs[i]) {
+            //swap
+            var temp = objYs[i];
+            objYs[i] = objYs[i+1];
+            objYs[i+1] = temp;
+            break; //only do one swap per call
+        }
+    }
 }
 
 function runProgram() {
