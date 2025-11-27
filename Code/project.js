@@ -16,12 +16,27 @@ var colors = [];
 var normals = [];
 var ambientColor = [0.2, 0.2, 0.2];
 
-var objYs = [0.1, 0.2, 0.3]; // array of just the y values for sorting
+var objYs = [0.1, 0.2, 0.3, 0.32]; // array of just the y values for sorting
 var currentAlgorithm = 'bubble';
 var rectProperties = {
     x: 0.1,
     z: 0.2,
 } // the x and z properties of all rectangles
+
+//camera stuff
+// camera frustum (updated to cover the scene distances)
+var near = 0.1;
+var far = 100.0;
+var fovy = 45.0;  // Field-of-view in Y direction angle (in degrees)
+var aspect = 1.0; // will be set from canvas in main()
+var zmin = 1.0;
+var zmax = 50.0;
+var modelViewMatrix, projectionMatrix;
+var modelViewMatrixLoc, projectionMatrixLoc;
+// position the eye so it looks at the small quads near the origin
+var eye = vec3(0.0, 0.6, 2.0);
+var at = vec3(0.0, 0.15, 0.0);
+var up = vec3(0.0, 1.0, 0.0);
 
 function main() {
     //load the canvas and context
@@ -33,6 +48,8 @@ function main() {
 
     //  Configure WebGL
     gl.viewport(0, 0, canvas.width, canvas.height);
+    // keep aspect ratio in sync with canvas
+    aspect = canvas.width / canvas.height;
     gl.clearColor(0.3, 0.3, 0.3, 1.0);
 
     // Enable depth testing
@@ -60,6 +77,9 @@ function main() {
     var aLoc = gl.getUniformLocation(program, "u_Ambient_color");
     if (aLoc) gl.uniform3f(aLoc, ambientColor[0], ambientColor[1], ambientColor[2]);
 
+    modelViewMatrixLoc = gl.getUniformLocation( program, "modelViewMatrix" );
+    projectionMatrixLoc = gl.getUniformLocation( program, "projectionMatrix" );
+
     runProgram();
     
 }
@@ -67,6 +87,12 @@ function main() {
 function runProgram() {
     //clear the canvas
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+    //set the camera
+    modelViewMatrix = lookAt(eye, at , up);
+    projectionMatrix = perspective(fovy, aspect, near, far);
+    gl.uniformMatrix4fv( modelViewMatrixLoc, false, flatten(modelViewMatrix) );
+    gl.uniformMatrix4fv( projectionMatrixLoc, false, flatten(projectionMatrix) );
 
     //loop through obj array and draw rectangles
     var startingX = -0.5;
@@ -108,12 +134,12 @@ function drawRect(obj, startingX) {
     var rectColors = [
         0.0, 0.0, 1.0, 1.0,
         0.0, 0.0, 1.0, 1.0,
-        0.0, 0.0, 1.0, 1.0,
-        0.0, 0.0, 1.0, 1.0,
-        0.0, 0.0, 1.0, 1.0,
-        0.0, 0.0, 1.0, 1.0,
-        0.0, 0.0, 1.0, 1.0,
-        0.0, 0.0, 1.0, 1.0
+        0.0, 0.0, 0.7, 1.0,
+        0.0, 0.0, 0.7, 1.0,
+        0.0, 0.7, 0.0, 1.0,
+        0.0, 0.7, 0.0, 1.0,
+        0.0, 1.0, 0.0, 1.0,
+        0.0, 1.0, 0.0, 1.0
     ];
     var rectNormals = [
         0.0, 0.0, 1.0,
