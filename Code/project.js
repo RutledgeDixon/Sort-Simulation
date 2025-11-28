@@ -126,6 +126,7 @@ async function doOneSwap() {
         switch (currentAlgorithm) {
             case 'bubble': sortStepper = bubbleStepper(objYs); break;
             case 'selection': sortStepper = selectionStepper(objYs); break;
+            case 'insertion': sortStepper = insertionStepper(objYs); break;
         }
     }
     

@@ -1,5 +1,3 @@
-// Classic bubble-pass generator. It walks the passes of bubble sort and yields
-// after every actual swap. Consumers call .next() to perform a single swap step.
 function* bubbleStepper(list) {
     for (let passLimit = list.length - 1; passLimit >= 1; passLimit--) {
         for (let i = 0; i < passLimit; i++) {
@@ -13,22 +11,28 @@ function* bubbleStepper(list) {
     }
 }
 
-// Classic selection sort generator. It walks the array and yields
-// after every actual swap. Consumers call .next() to perform a
-// single swap step.
 function* selectionStepper(list) {
     for (let i = 0; i < list.length - 1; i++) {
-        let minIndex = i;
+        let min = i;
         for (let j = i + 1; j < list.length; j++) {
-            if (list[j] < list[minIndex]) {
-                minIndex = j;
-            }
+            if (list[j] < list[min])
+                min = j;
         }
-        if (minIndex !== i) {
-            const tmp = list[i];
-            list[i] = list[minIndex];
-            list[minIndex] = tmp;
-            yield true; // swap performed
+        let temp = list[i];
+        list[i] = list[min];
+        list[min] = temp;
+        yield true; // swap performed
+    }
+}
+
+function* insertionStepper(list) {
+    for (let i = 1; i < list.length; i++) {
+        let key = list[i];
+        while (i > 0 && key < list[i-1]) {
+            list[i] = list[i-1];
+            i--;
+            list[i] = key;
+            yield true; // shift performed
         }
     }
 }
