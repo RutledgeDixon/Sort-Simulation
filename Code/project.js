@@ -116,37 +116,21 @@ function main() {
 
 //does the next swap in the current algorithm
 async function doOneSwap() {
-    if (isSorted(objYs)) {
-        //sorting is true but it should be false since it's finished
-        toggleSorting();
-        return;
-    }
-
     if (!sortStepper) {
         switch (currentAlgorithm) {
             case 'bubble': sortStepper = bubbleStepper(objYs); break;
             case 'selection': sortStepper = selectionStepper(objYs); break;
             case 'insertion': sortStepper = insertionStepper(objYs); break;
+            case 'merge': sortStepper = mergeStepper(objYs); break;
         }
     }
-    
+
     const s = sortStepper.next();
     if (s.done) {
         // finished sorting — clear state and stop
         sortStepper = null;
-        isSorting = false;
+        toggleSorting();
     }
-}
-
-function isSorted(list) {
-    var sorted = true;
-    for (var i = 1; i < list.length; i++) {
-        if (list[i-1] > list[i]) {
-            sorted = false;
-            break;
-        }
-    }
-    return sorted;
 }
 
 function changeAlgorithm(value) {
