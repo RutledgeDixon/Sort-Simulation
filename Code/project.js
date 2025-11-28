@@ -28,6 +28,8 @@ var objYs = []; // array of just the y values for sorting
 var spacing, totalWidth, startingX; //helper values for positioning
 var rectProperties = { x: 0.0, z: 0.0, maxHeight: 0.5 } // the x and z properties of all rectangles
 
+var waitTime = 50; //Amount of time in milliseconds between each swap
+
 //camera stuff
 // camera frustum (updated to cover the scene distances)
 var near = 0.1;
@@ -47,6 +49,14 @@ var up = vec3(0.0, 1.0, 0.0);
 async function sleep(milliseconds) {
     return new Promise(resolve => setTimeout(resolve, milliseconds));
 };
+
+function changeSpeed(value) {
+    switch(value) {
+        case 'slow': waitTime = 100; break;
+        case 'fast': waitTime = 0; break;
+        default: waitTime = 50;
+    }
+}
 
 function main() {
     //load the canvas and context
@@ -124,9 +134,6 @@ async function doOneSwap() {
             isSorting = false;
         }
     }
-
-    //wait
-    await sleep(200);
 }
 
 function isSorted(list) {
@@ -179,6 +186,7 @@ async function runProgram() {
 
     // if sorting, do one step
     if (isSorting) {
+        await sleep(waitTime);  //wait
         doOneSwap();
     }
 
