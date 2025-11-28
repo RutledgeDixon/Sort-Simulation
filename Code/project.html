@@ -70,6 +70,7 @@ void main() {
             <option value="selection">Selection Sort</option>
             <option value="insertion">Insertion Sort</option>
             <option value="merge">Merge Sort</option>
+            <option value="heap">Heap Sort</option> 
             
         </select>
         <Label id="speed-label" for="speed-select">Select Speed</Label>
@@ -79,7 +80,7 @@ void main() {
             <option value="fast">Fast</option>
         </select>
         <Label id="count-label" for="count-select">Count</Label>
-        <input type="number" id="count-select" value="10" min="2" max="50" onchange="changeCount(this.value)" oninput="if(this.value < 2) this.value = 2; if(this.value > 50) this.value = 50;">
+        <input type="number" id="count-select" value="10" min="2" max="50" onchange="if(this.value < 2) this.value = 2; if(this.value > 50) this.value = 50; changeCount(this.value)">
     </div>
     <div id="canvas-container">
         <canvas id="webgl" width="1024" height="1024">

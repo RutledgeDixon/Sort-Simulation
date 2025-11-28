@@ -73,3 +73,45 @@ function* merge(list, start, leftLen, rightLen) {
         yield true;
     }
 }
+
+function* heapStepper(list) {
+    // Build max heap
+    for (let i = Math.floor(list.length / 2) - 1; i >= 0; i--) {
+        yield* heap(list, list.length, i);
+    }
+
+    // Extract elements from heap one by one
+    for (let i = list.length - 1; i > 0; i--) {
+        // Move current root to end
+        let temp = list[0];
+        list[0] = list[i];
+        list[i] = temp;
+        yield true; // swap performed
+
+        // Heapify reduced heap
+        yield* heap(list, i, 0);
+    }
+}
+
+function* heap(list, heapSize, rootIndex) {
+    let largest = rootIndex;
+    const left = 2 * rootIndex + 1;
+    const right = 2 * rootIndex + 2;
+
+    if (left < heapSize && list[left] > list[largest]) {
+        largest = left;
+    }
+
+    if (right < heapSize && list[right] > list[largest]) {
+        largest = right;
+    }
+
+    if (largest !== rootIndex) {
+        let temp = list[rootIndex];
+        list[rootIndex] = list[largest];
+        list[largest] = temp;
+        yield true; // swap performed
+
+        yield* heap(list, heapSize, largest);
+    }
+}
