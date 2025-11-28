@@ -16,6 +16,10 @@ var normalBuffer;
 var ambientColor = [0.2, 0.2, 0.2];
 
 var currentAlgorithm = 'bubble';
+// generator/stepper for the currently-active sorting algorithm. This keeps state
+// encapsulated so we don't need multiple global counters while allowing one
+// swap per step.
+var sortStepper = null;
 
 var isSorting = false;
 var count = 5;
@@ -38,6 +42,11 @@ var modelViewMatrixLoc, projectionMatrixLoc;
 var eye = vec3(0.0, 0.6, 2.0);
 var at = vec3(0.0, 0.15, 0.0);
 var up = vec3(0.0, 1.0, 0.0);
+
+//sleep function
+async function sleep(milliseconds) {
+    return new Promise(resolve => setTimeout(resolve, milliseconds));
+};
 
 function main() {
     //load the canvas and context
@@ -97,12 +106,27 @@ function main() {
 }
 
 //does the next swap in the current algorithm
-function doOneSwap() {
-    if (isSorted(objYs)) return;
+async function doOneSwap() {
+    if (isSorted(objYs)) {
+        //sorting is true but it should be false since it's finished
+        toggleSorting();
+        return;
+    }
 
     if (currentAlgorithm === 'bubble') {
-        bubbleSortStep();
+        if (!sortStepper) {
+            sortStepper = bubbleStepper(objYs);
+        }
+        const s = sortStepper.next();
+        if (s.done) {
+            // finished sorting — clear state and stop
+            sortStepper = null;
+            isSorting = false;
+        }
     }
+
+    //wait
+    await sleep(200);
 }
 
 function isSorted(list) {
@@ -116,19 +140,22 @@ function isSorted(list) {
     return sorted;
 }
 
-function bubbleSortStep() {
-    for (var i = 1; i < objYs.length - 1; i++) {
-        if (objYs[i-1] > objYs[i]) {
-            //swap
-            var temp = objYs[i];
-            objYs[i] = objYs[i+1];
-            objYs[i+1] = temp;
-            break; //only do one swap per call
+// Classic bubble-pass generator. It walks the passes of bubble sort and yields
+// after every actual swap. Consumers call .next() to perform a single swap step.
+function* bubbleStepper(list) {
+    for (let passLimit = list.length - 1; passLimit >= 1; passLimit--) {
+        for (let i = 0; i < passLimit; i++) {
+            if (list[i] > list[i + 1]) {
+                const tmp = list[i];
+                list[i] = list[i + 1];
+                list[i + 1] = tmp;
+                yield true; // swap performed
+            }
         }
     }
 }
 
-function runProgram() {
+async function runProgram() {
     //clear the canvas
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
@@ -148,6 +175,11 @@ function runProgram() {
         }
         drawRect(obj, offset);
         offset += spacing; 
+    }
+
+    // if sorting, do one step
+    if (isSorting) {
+        doOneSwap();
     }
 
     requestAnimationFrame(runProgram);
@@ -224,6 +256,8 @@ function toggleSorting() {
 
 function randomizeArray() {
     objYs.sort(() => Math.random() - 0.5);
+    // reset any in-progress stepper so future steps don't use stale state
+    sortStepper = null;
     console.log("Object array randomized");
 }
 
@@ -240,6 +274,8 @@ function changeCount(newCount) {
     //update starting x offset to center the rectangles
     totalWidth = (count * rectProperties.x) + ((count - 1) * gap);
     startingX = -totalWidth / 2;
+    // reset stepper when the array contents/length change
+    sortStepper = null;
 }
 
 // Make the canvas match its displayed size (handles responsive CSS + device pixel ratio)
