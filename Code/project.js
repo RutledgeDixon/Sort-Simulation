@@ -22,7 +22,7 @@ var currentAlgorithm = 'bubble';
 var sortStepper = null;
 
 var isSorting = false;
-var count = 5;
+var count = 10;
 var gap = 0.05;
 var objYs = []; // array of just the y values for sorting
 var spacing, totalWidth, startingX; //helper values for positioning
