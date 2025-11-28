@@ -115,3 +115,25 @@ function* heap(list, heapSize, rootIndex) {
         yield* heap(list, heapSize, largest);
     }
 }
+
+function* shellStepper(list) {
+    // Start with a large gap, then reduce
+    for (let gap = Math.floor(list.length / 2); gap > 0; gap = Math.floor(gap / 2)) {
+        // Do a gapped insertion sort
+        for (let i = gap; i < list.length; i++) {
+            const temp = list[i];
+            let j = i;
+            
+            while (j >= gap && list[j - gap] > temp) {
+                list[j] = list[j - gap];
+                j -= gap;
+                yield true; // shift performed
+            }
+            
+            if (list[j] !== temp) {
+                list[j] = temp;
+                yield true; // final insert
+            }
+        }
+    }
+}
