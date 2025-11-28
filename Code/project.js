@@ -147,6 +147,10 @@ function isSorted(list) {
     return sorted;
 }
 
+function changeAlgorithm(value) {
+    currentAlgorithm = value;
+}
+
 // Classic bubble-pass generator. It walks the passes of bubble sort and yields
 // after every actual swap. Consumers call .next() to perform a single swap step.
 function* bubbleStepper(list) {
