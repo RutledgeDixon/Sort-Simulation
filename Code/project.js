@@ -279,8 +279,13 @@ function changeCount(newCount) {
     for (var i = 1; i <= count; i++) {
         objYs.push(rectProperties.maxHeight * i / count);
     }
-    //update spacing and rect x and z to fit the page
-    rectProperties.x = (1.5 - (count - 1) * gap) / count;
+    // shrink the gap as count grows so gap stays roughly proportional to x
+    var gapScale = Math.min(1, 20 / count); // full gap up to 20, then shrink
+    gap = 0.05 * gapScale;
+
+    // compute candidate x from remaining width and clamp it to a minimum
+    var rawX = (2 - (count - 1) * gap) / count;
+    rectProperties.x = Math.max(0.03, rawX);
     rectProperties.z = rectProperties.x;
     spacing = rectProperties.x + gap;
     //update starting x offset to center the rectangles
