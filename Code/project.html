@@ -60,12 +60,14 @@ void main() {
 <script type="text/javascript" src="../Common/initShaders.js"></script>
 <script type="text/javascript" src="../Common/MV.js"></script>
 <script type="text/javascript" src="project.js"></script>
+<script type="text/javascript" src="algorithms.js"></script>
 
 <div id="main-container">
     <div id="options">
         <Label id="select-label" for="algorithm-select">Select Sorting Algorithm</Label>
         <select id="algorithm-select" onchange="changeAlgorithm(this.value)">
             <option value="bubble">Bubble Sort</option>
+            <option value="selection">Selection Sort</option>
         </select>
         <Label id="speed-label" for="speed-select">Select Speed</Label>
         <select id="speed-select" onchange="changeSpeed(this.value)">

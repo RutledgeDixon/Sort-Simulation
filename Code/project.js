@@ -52,7 +52,7 @@ async function sleep(milliseconds) {
 
 function changeSpeed(value) {
     switch(value) {
-        case 'slow': waitTime = 100; break;
+        case 'slow': waitTime = 200; break;
         case 'fast': waitTime = 0; break;
         default: waitTime = 50;
     }
@@ -122,16 +122,18 @@ async function doOneSwap() {
         return;
     }
 
-    if (currentAlgorithm === 'bubble') {
-        if (!sortStepper) {
-            sortStepper = bubbleStepper(objYs);
+    if (!sortStepper) {
+        switch (currentAlgorithm) {
+            case 'bubble': sortStepper = bubbleStepper(objYs); break;
+            case 'selection': sortStepper = selectionStepper(objYs); break;
         }
-        const s = sortStepper.next();
-        if (s.done) {
-            // finished sorting — clear state and stop
-            sortStepper = null;
-            isSorting = false;
-        }
+    }
+    
+    const s = sortStepper.next();
+    if (s.done) {
+        // finished sorting — clear state and stop
+        sortStepper = null;
+        isSorting = false;
     }
 }
 
