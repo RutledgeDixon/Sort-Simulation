@@ -43,12 +43,12 @@ function* mergeStepper(list) {
 
 function* mergeSort(list, start, length) {
     if (length > 1) {
-        const halfSize = Math.floor(length / 2);
+        const mid = Math.floor(length / 2);
 
-        yield* mergeSort(list, start, halfSize);
-        yield* mergeSort(list, start + halfSize, length - halfSize);
+        yield* mergeSort(list, start, mid);
+        yield* mergeSort(list, start + mid, length - mid);
         
-        yield* merge(list, start, halfSize, length - halfSize);
+        yield* merge(list, start, mid, length - mid);
     }
 }
 
@@ -56,17 +56,11 @@ function* merge(list, start, leftLen, rightLen) {
     const left = list.slice(start, start + leftLen);
     const right = list.slice(start + leftLen, start + leftLen + rightLen);
 
-    let i = 0;
-    let j = 0;
-    let k = start;
+    let i = 0, j = 0, k = start;
 
     while (i < leftLen && j < rightLen) {
-        if (left[i] <= right[j]) {
-            list[k++] = left[i++];
-        } else {
-            list[k++] = right[j++];
-        }
-        yield true; // placement performed
+        list[k++] = (left[i] <= right[j]) ? left[i++] : right[j++];
+        yield true; // merge step performed
     }
 
     while (i < leftLen) {
@@ -78,5 +72,4 @@ function* merge(list, start, leftLen, rightLen) {
         list[k++] = right[j++];
         yield true;
     }
-
 }
