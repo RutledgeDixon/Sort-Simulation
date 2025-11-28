@@ -172,3 +172,18 @@ function* shellStepper(list) {
         }
     }
 }
+
+function* bogoStepper(list) {
+    let sorted = false;
+    while (!sorted) {
+        list.sort(() => Math.random() - 0.5);
+        yield true;
+        sorted = true;
+        for (var i = 1; i < list.length; i++) {
+            if (list[i-1] > list[i]) {
+                sorted = false;
+                break;
+            }
+        }
+    }
+}
