@@ -122,6 +122,7 @@ async function doOneSwap() {
             case 'selection': sortStepper = selectionStepper(objYs); break;
             case 'insertion': sortStepper = insertionStepper(objYs); break;
             case 'merge': sortStepper = mergeStepper(objYs); break;
+            case 'quick': sortStepper = quickStepper(objYs); break;
             case 'heap': sortStepper = heapStepper(objYs); break;
             case 'shell': sortStepper = shellStepper(objYs); break;
         }

@@ -74,6 +74,41 @@ function* merge(list, start, leftLen, rightLen) {
     }
 }
 
+function* quickStepper(list) {
+    yield* quickSort(list, 0, list.length - 1);
+}
+
+function* quickSort(list, first, last) {
+    if (first < last) {
+        let pivotIndex = yield* partition(list, first, last);
+        yield* quickSort(list, first, pivotIndex - 1);
+        yield* quickSort(list, pivotIndex + 1, last);
+    }
+}
+
+function* partition(list, first, last) {
+    const pivotValue = list[first];
+    let up = first;
+    let down = last;
+
+    while (up < down) {
+        while (up < last && list[up] <= pivotValue) up++;
+        while (list[down] > pivotValue) down--;
+        if (up < down) {
+            const temp = list[up];
+            list[up] = list[down];
+            list[down] = temp;
+            yield true; // swap performed
+        }
+    }
+    
+    list[first] = list[down];
+    list[down] = pivotValue;
+    yield true; // swap pivot into place
+
+    return down;
+}
+
 function* heapStepper(list) {
     // Build max heap
     for (let i = Math.floor(list.length / 2) - 1; i >= 0; i--) {
