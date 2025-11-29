@@ -118,7 +118,6 @@ function main() {
 async function doOneSwap() {
     if (!sortStepper) {
         switch (currentAlgorithm) {
-            case 'bubble': sortStepper = bubbleStepper(objYs); break;
             case 'selection': sortStepper = selectionStepper(objYs); break;
             case 'insertion': sortStepper = insertionStepper(objYs); break;
             case 'merge': sortStepper = mergeStepper(objYs); break;
@@ -126,6 +125,7 @@ async function doOneSwap() {
             case 'heap': sortStepper = heapStepper(objYs); break;
             case 'shell': sortStepper = shellStepper(objYs); break;
             case 'bogo': sortStepper = bogoStepper(objYs); break;
+            default: sortStepper = bubbleStepper(objYs);
         }
     }
 
