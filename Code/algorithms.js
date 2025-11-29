@@ -1,3 +1,14 @@
+/*
+ * SORTING ALGORITHM STEPPERS
+ * 
+ * Each function is a generator that sorts an array in-place and yields
+ * after each significant operation (swap, shift, or merge). This allows
+ * consumers to animate the sorting process step-by-step by calling .next()
+ * to advance one operation at a time.
+ */
+
+// Bubble Sort - O(n²) average and worst case
+// Repeatedly swaps adjacent elements if they're out of order
 function* bubbleStepper(list) {
     for (let passLimit = list.length - 1; passLimit >= 1; passLimit--) {
         for (let i = 0; i < passLimit; i++) {
@@ -11,6 +22,8 @@ function* bubbleStepper(list) {
     }
 }
 
+// Selection Sort - O(n²) average and worst case
+// Finds the minimum element and swaps it to the front of the unsorted portion
 function* selectionStepper(list) {
     for (let i = 0; i < list.length - 1; i++) {
         let min = i;
@@ -25,6 +38,8 @@ function* selectionStepper(list) {
     }
 }
 
+// Insertion Sort - O(n²) average and worst case, O(n) best case
+// Builds sorted array by inserting each element into its proper position
 function* insertionStepper(list) {
     for (let i = 1; i < list.length; i++) {
         let key = list[i];
@@ -37,10 +52,13 @@ function* insertionStepper(list) {
     }
 }
 
+// Merge Sort - O(n log n) all cases
+// Recursively divides the array in half, sorts each half, then merges them
 function* mergeStepper(list) {
     yield* mergeSort(list, 0, list.length);
 }
 
+// Recursively divides array into halves and sorts them
 function* mergeSort(list, start, length) {
     if (length > 1) {
         const mid = Math.floor(length / 2);
@@ -52,6 +70,7 @@ function* mergeSort(list, start, length) {
     }
 }
 
+// Merges two sorted subarrays into a single sorted array
 function* merge(list, start, leftLen, rightLen) {
     const left = list.slice(start, start + leftLen);
     const right = list.slice(start + leftLen, start + leftLen + rightLen);
@@ -74,10 +93,13 @@ function* merge(list, start, leftLen, rightLen) {
     }
 }
 
+// Quick Sort - O(n log n) average case, O(n²) worst case
+// Picks a pivot and partitions array into elements less/greater than pivot
 function* quickStepper(list) {
     yield* quickSort(list, 0, list.length - 1);
 }
 
+// Recursively sorts partitions on either side of the pivot
 function* quickSort(list, first, last) {
     if (first < last) {
         let pivotIndex = yield* partition(list, first, last);
@@ -86,6 +108,7 @@ function* quickSort(list, first, last) {
     }
 }
 
+// Partitions array around pivot and returns pivot's final position
 function* partition(list, first, last) {
     const pivotValue = list[first];
     let up = first;
@@ -109,6 +132,8 @@ function* partition(list, first, last) {
     return down;
 }
 
+// Heap Sort - O(n log n) all cases
+// Builds a max heap then repeatedly extracts the maximum to the end
 function* heapStepper(list) {
     // Build max heap
     for (let i = Math.floor(list.length / 2) - 1; i >= 0; i--) {
@@ -128,6 +153,7 @@ function* heapStepper(list) {
     }
 }
 
+// Maintains max heap property by moving larger values toward the root
 function* heap(list, heapSize, rootIndex) {
     let largest = rootIndex;
     const left = 2 * rootIndex + 1;
@@ -151,6 +177,8 @@ function* heap(list, heapSize, rootIndex) {
     }
 }
 
+// Shell Sort - O(n log n) to O(n²) depending on gap sequence
+// Insertion sort with decreasing gaps, allowing distant element swaps
 function* shellStepper(list) {
     // Start with a large gap, then reduce
     for (let gap = Math.floor(list.length / 2); gap > 0; gap = Math.floor(gap / 2)) {
@@ -173,6 +201,8 @@ function* shellStepper(list) {
     }
 }
 
+// Bogo Sort - O((n+1)!) average case, unbounded worst case
+// Randomly shuffles the array until it happens to be sorted
 function* bogoStepper(list) {
     let sorted = false;
     while (!sorted) {
