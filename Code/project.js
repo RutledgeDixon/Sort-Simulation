@@ -108,6 +108,35 @@ function main() {
     modelViewMatrixLoc = gl.getUniformLocation( program, "modelViewMatrix" );
     projectionMatrixLoc = gl.getUniformLocation( program, "projectionMatrix" );
 
+    //event listener for keybinds for each command
+    window.addEventListener("keydown", function(event) {
+        switch(event.key) {
+            case " ": //spacebar to start/pause sorting
+                toggleSorting();
+                break;
+            case "r": //r to randomize array
+                randomizeArray();
+                break;
+            case "ArrowRight": //right arrow to do one swap
+                if (!isSorting) {
+                    doOneSwap();
+                }
+                break;
+            case "ArrowLeft": //left arrow to reset array
+                //this is where we would go back one step
+                break;
+            case "f": //change speed to fast
+                changeSpeed('fast');
+                break;
+            case "s": //change speed to slow
+                changeSpeed('slow');
+                break;
+            case "m": //change speed to medium
+                changeSpeed('medium');
+                break;
+        }
+    });
+
     //initialize positioining variables
     changeCount(count);
     //start the render loop
