@@ -77,24 +77,29 @@ function* mergeSort(list, start, length) {
 
 // Merges two sorted subarrays into a single sorted array
 function* merge(list, start, leftLen, rightLen) {
-    const left = list.slice(start, start + leftLen);
-    const right = list.slice(start + leftLen, start + leftLen + rightLen);
-
-    let i = 0, j = 0, k = start;
-
-    while (i < leftLen && j < rightLen) {
-        list[k++] = (left[i] <= right[j]) ? left[i++] : right[j++];
-        yield true; // merge step performed
-    }
-
-    while (i < leftLen) {
-        list[k++] = left[i++];
-        yield true;
-    }
-
-    while (j < rightLen) {
-        list[k++] = right[j++];
-        yield true;
+    let leftStart = start;
+    let leftEnd = start + leftLen;
+    let rightStart = leftEnd;
+    let rightEnd = rightStart + rightLen;
+    
+    // Insertion-based merge: repeatedly find the smallest remaining element
+    // and swap it into position
+    for (let pos = leftStart; pos < rightEnd; pos++) {
+        // Find minimum in remaining unsorted portion
+        let minIdx = pos;
+        for (let i = pos + 1; i < rightEnd; i++) {
+            if (list[i] < list[minIdx]) {
+                minIdx = i;
+            }
+        }
+        
+        // Swap minimum to current position if needed
+        if (minIdx !== pos) {
+            let temp = list[pos];
+            list[pos] = list[minIdx];
+            list[minIdx] = temp;
+            yield true; // swap performed
+        }
     }
 }
 
