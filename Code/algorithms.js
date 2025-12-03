@@ -140,6 +140,16 @@ function* partition(list, first, last) {
 // Heap Sort - O(n log n) all cases
 // Builds a max heap then repeatedly extracts the maximum to the end
 function* heapStepper(list) {
+    // Check if already sorted
+    let alreadySorted = true;
+    for (let i = 1; i < list.length; i++) {
+        if (list[i] < list[i - 1]) {
+            alreadySorted = false;
+            break;
+        }
+    }
+    if (alreadySorted) return;
+
     // Build max heap
     for (let i = Math.floor(list.length / 2) - 1; i >= 0; i--) {
         yield* heap(list, list.length, i);
@@ -189,18 +199,15 @@ function* shellStepper(list) {
     for (let gap = Math.floor(list.length / 2); gap > 0; gap = Math.floor(gap / 2)) {
         // Do a gapped insertion sort
         for (let i = gap; i < list.length; i++) {
-            const temp = list[i];
             let j = i;
             
-            while (j >= gap && list[j - gap] > temp) {
+            while (j >= gap && list[j] < list[j - gap]) {
+                // Swap elements that are gap distance apart
+                const temp = list[j];
                 list[j] = list[j - gap];
+                list[j - gap] = temp;
+                yield true; // swap performed
                 j -= gap;
-                yield true; // shift performed
-            }
-            
-            if (list[j] !== temp) {
-                list[j] = temp;
-                yield true; // final insert
             }
         }
     }
@@ -209,16 +216,17 @@ function* shellStepper(list) {
 // Bogo Sort - O((n+1)!) average case, unbounded worst case
 // Randomly shuffles the array until it happens to be sorted
 function* bogoStepper(list) {
-    let sorted = false;
+    let sorted = false;    
     while (!sorted) {
-        list.sort(() => Math.random() - 0.5);
-        yield true;
         sorted = true;
-        for (var i = 1; i < list.length; i++) {
+        for (let i = 1; i < list.length; i++) {
             if (list[i-1] > list[i]) {
                 sorted = false;
                 break;
             }
         }
+        if (sorted) return;
+        list.sort(() => Math.random() - 0.5);
+        yield true;
     }
 }
