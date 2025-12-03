@@ -1,3 +1,8 @@
+// Computer Graphics Final Project
+// Sorting Algorithm Visualization in 3D using WebGL
+// Fall 25
+// Brandon Bryant and Rutledge Dixon
+
 /*
  * SORTING ALGORITHM STEPPERS
  * 
